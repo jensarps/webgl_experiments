@@ -1,5 +1,7 @@
 /**
  * @author mr.doob / http://mrdoob.com/
+ *
+ * modifications by Jens Arps / http://jensarps.de/
  */
 
 THREE.ReusableRay = function () {
