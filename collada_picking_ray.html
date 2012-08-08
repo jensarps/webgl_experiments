@@ -95,15 +95,6 @@
         container = document.createElement('div');
         document.body.appendChild(container);
 
-        // we just do the following to hide the event from controls
-        // and disable moving via mouse buttons
-        var stopEvent = function (evt) {
-            evt.preventDefault();
-            evt.stopPropagation();
-        };
-        container.addEventListener('mousedown', stopEvent, false);
-        container.addEventListener('mouseup', stopEvent, false);
-
         container.addEventListener('click', function (evt) {
             // The user has clicked; let's note this event
             // and the click's coordinates so that we can
@@ -112,6 +103,12 @@
             clickInfo.x = evt.clientX;
             clickInfo.y = evt.clientY;
         }, false);
+
+        // we just do the following to hide the event from controls
+        // and disable moving via mouse buttons
+            var stopEvent = function (evt) { evt.preventDefault(); evt.stopPropagation(); };
+            container.addEventListener('mousedown', stopEvent, false);
+            container.addEventListener('mouseup', stopEvent, false);
 
         /* Scene & Camera */
 
@@ -160,7 +157,6 @@
 
     function createBoxes () {
         var boxCount = 20;
-
 
         var loader = new THREE.ColladaLoader();
         loader.options.convertUpAxis = true;
@@ -223,8 +219,8 @@
             // Substract the vector representing the camera position
             directionVector.subSelf(camera.position);
 
-            // Normalize the vector, to avoid possibly weird numbers from the
-            // substraction.
+            // Normalize the vector, to avoid large numbers from the
+            // projection and substraction
             directionVector.normalize();
 
             // Now our direction vector holds the right numbers!
