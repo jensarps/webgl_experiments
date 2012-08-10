@@ -86,6 +86,7 @@
     };
 
     var statsNode = document.getElementById('stats');
+    var marker;
 
     init();
     animate();
@@ -153,6 +154,9 @@
 
         createBoxes();
 
+        /* hit point marker */
+        marker = new THREE.Mesh( new THREE.SphereGeometry(1), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
+        scene.add(marker);
     }
 
     function createBoxes () {
@@ -237,6 +241,11 @@
                 statsNode.innerHTML = 'Name: ' + target.name
                         + '<br>'
                         + 'ID: ' + target.id;
+
+                // let's move the marker to the hit point
+                marker.position.x = intersects[0].point.x;
+                marker.position.y = intersects[0].point.y;
+                marker.position.z = intersects[0].point.z;
             }
 
         }
