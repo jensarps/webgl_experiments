@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - geometry - terrain + fog</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				color: #61443e;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+				background-color: #efd1b5;
+				margin: 0px;
+				overflow: hidden;
+                cursor: default;
+                -webkit-user-select: none;
+                -webkit-transform: translate3d(0, 0, 0);
+			}
+			#hud {
+				position: absolute;
+				top: 0px;
+                width: 100%;
+				padding: 5px;
+			}
+			a {
+
+				color: #a06851;
+			}
+            button {
+                position: absolute;
+                right: 20px;
+                top: 20px;
+            }
+            #crosshair {
+                color: #dc143c;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin: -10px 0 0 -10px;
+                text-align: center;
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
+            }
+            #horizon {
+                width: 150px;
+                margin: auto;
+                -webkit-transform: translate3d(0, 0, 0) rotate(0);
+            }
+            #horizon > div {
+                width: 50px;
+                margin: auto;
+            }
+            #horizon .inner {
+                border-bottom: solid 1px #7fff00;
+            }
+
+		</style>
+	</head>
+	<body>
+
+		<div id="container"><br /><br /><br /><br /><br /><span id="progress">Generating world...</span></div>
+        <div id="info"></div>
+		<div id="hud">
+            <div id="horizon"><div class="inner"></div><div></div><div class="inner"></div></div>
+            <div id="crosshair">+</div>
+		</div>
+        <div id="help"></div>
+
+        <button onclick="document.documentElement.requestFullScreen();GameShim.supports.pointerLock && document.documentElement.requestPointerLock();">Fullscreen</button>
+
+		<script src="lib/three/three.js"></script>
+		<script src="lib/three/Stats.js"></script>
+
+        <script src="lib/require.js"></script>
+        <script src="lib/game-shim.js"></script>
+
+        <script src="lib/ReusableRay.js"></script>
+
+        <script src="src/app.js"></script>
+	</body>
+</html>
