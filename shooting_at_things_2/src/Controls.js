@@ -1,7 +1,5 @@
 define(function(){
 
-  var _i = 0;
-
   var Controls = function(object, input){
     this.object = object;
     this.object.useQuaternion = true;
