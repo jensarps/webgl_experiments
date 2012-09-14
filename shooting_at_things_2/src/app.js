@@ -114,17 +114,6 @@ require([
       horizon: document.getElementById('horizon')
     };
 
-    var radarObjects = [
-      {
-        name: 'foo',
-        model: {
-          position: new THREE.Vector3(0, 0, -Infinity)
-        }
-      }
-    ];
-    radar = new RadarDetector(camera, radarObjects);
-
-
     /* Ground */
 
     var img = new Image();
