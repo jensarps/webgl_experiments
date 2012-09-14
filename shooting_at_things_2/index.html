@@ -47,6 +47,8 @@
                 width: 150px;
                 margin: auto;
                 -webkit-transform: translate3d(0, 0, 0) rotate(0);
+
+                display: none;
             }
             #horizon > div {
                 width: 50px;
@@ -55,17 +57,27 @@
             #horizon .inner {
                 border-bottom: solid 1px #7fff00;
             }
+            #info {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                text-align: center;
+            }
 
 		</style>
 	</head>
 	<body>
 
 		<div id="container"><br /><br /><br /><br /><br /><span id="progress">Generating world...</span></div>
-        <div id="info"></div>
+        <div id="info">
+            Shooting At Things, revisited. Based on a <a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> example<br>
+            WASD + Mouse, left button to fire, dblclick for fullscreen
+        </div>
 		<div id="hud">
             <div id="horizon"><div class="inner"></div><div></div><div class="inner"></div></div>
-            <div id="crosshair">+</div>
 		</div>
+        <div id="crosshair">+</div>
         <div id="help"></div>
 
         <button onclick="document.documentElement.requestFullScreen();GameShim.supports.pointerLock && document.documentElement.requestPointerLock();">Fullscreen</button>
