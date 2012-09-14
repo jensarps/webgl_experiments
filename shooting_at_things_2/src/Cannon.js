@@ -78,14 +78,15 @@ define([
       var bullet = this.getBullet();
 
       vector.setEulerFromRotationMatrix(camera.matrix);
-      bullet.rotation.x = vector.x;
-      bullet.rotation.y = vector.y;
-      bullet.rotation.z = vector.z;
+      bullet.rotation.x = 0; //vector.x;
+      bullet.rotation.y = 0; //vector.y;
+      bullet.rotation.z = 1; //vector.z;
 
       bullet.position.x = camera.position.x;
       bullet.position.y = camera.position.y;
       bullet.position.z = camera.position.z;
 
+      // this is just used for raycasting
       vector.set(0, 0, -1);
       camera.matrix.rotateAxis(vector);
       bullet.direction.x = vector.x;
