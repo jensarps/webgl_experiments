@@ -35,7 +35,7 @@ define(function(){
           object = this.object;
 
       speed += (input.accelerate - input.decelerate) / 50;
-      speed = THREE.Math.clamp(speed, 0, 5);
+      speed = THREE.Math.clamp(speed, 1, 5);
       var speedMultiplier = speed / 10 + 1;
 
       if (input.boost) {
