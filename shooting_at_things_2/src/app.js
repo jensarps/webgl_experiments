@@ -124,9 +124,11 @@ require([
     img.src = heightMap;
 
     window.addEventListener('resize', onResize, false);
-    document.addEventListener('dblclick', function(){
-      document.documentElement.requestFullScreen();
-      GameShim.supports.pointerLock && document.documentElement.requestPointerLock();
+    document.addEventListener('keydown', function(evt){
+      if(evt.keyCode == 70){
+        document.documentElement.requestFullScreen();
+        GameShim.supports.pointerLock && document.documentElement.requestPointerLock();
+      }
     }, false);
   }
 
