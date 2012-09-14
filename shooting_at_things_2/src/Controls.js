@@ -57,9 +57,7 @@ define(function(){
       this.quaternion.set(pitch * factor, yaw * factor, roll * factor, 1).normalize();
       object.quaternion.multiplySelf(this.quaternion);
       object.matrix.setRotationFromQuaternion(object.quaternion);
-
-      object.matrix.setRotationFromQuaternion(object.quaternion);
-      object.matrixWorldNeedsUpdate = true;
+      
     }
   };
 
