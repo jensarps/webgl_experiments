@@ -208,8 +208,8 @@ require([
 
     var heightOverGround = camera.position.y - terrainGenerator.getHeightAt(camera.position.x, camera.position.z);
     if(heightOverGround <= 0){
-      isPaused = true;
-      alert('You crashed. Ts, ts, ts.');
+      //isPaused = true;
+      //alert('You crashed. Ts, ts, ts.');
     }
 
 /*
