@@ -94,7 +94,7 @@ define([
       bullet.direction.z = vector.z;
 
       //bullet.translateY(-10);
-      bullet.translateZ(-this.speed * 2);
+      //bullet.translateZ(-this.speed * 2);
 
       bullet._lifetime = 0;
 
