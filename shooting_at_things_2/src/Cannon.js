@@ -77,10 +77,10 @@ define([
 
       var bullet = this.getBullet();
 
-      vector.setEulerFromRotationMatrix(camera.matrix);
-      bullet.rotation.x = 0; //vector.x;
-      bullet.rotation.y = 0; //vector.y;
-      bullet.rotation.z = 1; //vector.z;
+      vector.setEulerFromRotationMatrix(camera.matrixWorld);
+      bullet.rotation.x = vector.x;
+      bullet.rotation.y = vector.y;
+      bullet.rotation.z = vector.z;
 
       bullet.position.x = camera.position.x;
       bullet.position.y = camera.position.y;
