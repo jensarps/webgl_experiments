@@ -240,6 +240,8 @@ function render (delta) {
     // Now our direction vector holds the right numbers!
     raycaster.set(camera.position, directionVector);
 
+    // Ask the raycaster for intersects with all objects in the scene:
+    // (The second arguments means "recursive")
     var intersects = raycaster.intersectObjects(scene.children, true);
 
     if (intersects.length) {
