@@ -1,0 +1,288 @@
+<!doctype html>
+<html>
+<head>
+    <title>Mouse-picking Collada models with Three.js</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            background-color: #f0f0f0;
+            margin: 0px;
+            overflow: hidden;
+            font-family: Monospace;
+            font-size: 13px;
+            text-align: center;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        a {
+            color: #0078ff;
+        }
+
+        #info {
+            color: #000000;
+            position: absolute;
+            top: 0px;
+            width: 100%;
+            padding: 5px;
+            z-index: 100;
+        }
+
+        #stats {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            color: #fff;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            width: 200px;
+            height: 60px;
+            border: solid 1px black;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="info">
+    - mouse-picking Collada models <a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> -<br>
+    crate model by <a href="http://www.turbosquid.com/FullPreview/Index.cfm/ID/631645" target="_blank">DeYogbar</a><br>
+    Move around using WASD and click on objects.
+</div>
+
+<div id="stats">
+</div>
+
+<script src="threejs_r62/build/three.min.js"></script>
+
+<script src="threejs_r62/ColladaLoader.js"></script>
+<script src="threejs_r62/FirstPersonControls.js"></script>
+
+<script src="three.js/js/Detector.js"></script>
+<script src="three.js/js/Stats.js"></script>
+
+<script>
+
+    if (!Detector.webgl) Detector.addGetWebGLMessage();
+
+    var container, stats;
+    var camera, controls, scene, renderer;
+
+    var clock = new THREE.Clock();
+
+    //var ray = new THREE.ReusableRay();
+    var raycaster = new THREE.Raycaster();
+    var projector = new THREE.Projector();
+    var directionVector = new THREE.Vector3();
+
+    var SCREEN_HEIGHT = window.innerHeight;
+    var SCREEN_WIDTH = window.innerWidth;
+
+    var clickInfo = {
+        x: 0,
+        y: 0,
+        userHasClicked: false
+    };
+
+    var statsNode = document.getElementById('stats');
+    var marker;
+
+    init();
+    animate();
+
+    function init () {
+
+        container = document.createElement('div');
+        document.body.appendChild(container);
+
+        container.addEventListener('click', function (evt) {
+            // The user has clicked; let's note this event
+            // and the click's coordinates so that we can
+            // react to it in the render loop
+            clickInfo.userHasClicked = true;
+            clickInfo.x = evt.clientX;
+            clickInfo.y = evt.clientY;
+        }, false);
+
+        // we just do the following to hide the event from controls
+        // and disable moving via mouse buttons
+            var stopEvent = function (evt) { evt.preventDefault(); evt.stopPropagation(); };
+            container.addEventListener('mousedown', stopEvent, false);
+            container.addEventListener('mouseup', stopEvent, false);
+
+        /* Scene & Camera */
+
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(25, SCREEN_WIDTH / SCREEN_HEIGHT);
+        scene.add(camera);
+
+
+        /* Controls */
+
+        controls = new THREE.FirstPersonControls(camera);
+        controls.constrainVertical = true;
+        controls.movementSpeed = 60;
+        controls.lookSpeed = 0.05;
+
+
+        /* Renderer */
+
+        renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+        renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        container.appendChild(renderer.domElement);
+
+
+        /* Lights */
+
+        var ambientLight = new THREE.AreaLight(0xffffff);
+        scene.add(ambientLight);
+
+        var directionalLight = new THREE.DirectionalLight(0xe0e0e0);
+        directionalLight.position.set(1, 1, 0.5).normalize();
+        scene.add(directionalLight);
+
+        directionalLight = new THREE.DirectionalLight(0xe0e0e0);
+        directionalLight.position.set(-1, 1, 0.5).normalize();
+        scene.add(directionalLight);
+
+
+        /* Ground */
+
+        var plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10), new THREE.MeshBasicMaterial({ color: 0x808080, wireframe: true }));
+        plane.rotation.x = - Math.PI / 2;
+        plane.name = 'Ground';
+        scene.add(plane);
+
+
+        /* Collada Objects */
+
+        createBoxes();
+
+        /* hit point marker */
+
+        marker = new THREE.Mesh( new THREE.SphereGeometry(1), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
+        scene.add(marker);
+    }
+
+    function createBoxes () {
+        var boxCount = 20;
+
+        var loader = new THREE.ColladaLoader();
+        loader.options.convertUpAxis = true;
+        loader.load('models/WoodenBox02/WoodenBox02.dae', function (collada) {
+
+            var objectProto = collada.scene;
+
+            for (var i = 0; i < boxCount; i++) {
+
+                var object = objectProto.clone();
+
+                object.name = 'Box #' + i;
+
+                object.position.x = Math.random() * 800 - 400;
+                object.position.y = 5;
+                object.position.z = Math.random() * 800 - 400;
+
+                object.rotation.y = ( Math.random() * 360 ) * Math.PI / 180;
+
+                object.scale.x = 10;
+                object.scale.y = 10;
+                object.scale.z = 10;
+
+                scene.add(object);
+            }
+
+        });
+    }
+
+    function animate () {
+
+        var delta = clock.getDelta();
+
+        requestAnimationFrame(animate);
+
+        render(delta);
+    }
+
+    function render (delta) {
+
+        if (clickInfo.userHasClicked) {
+
+            clickInfo.userHasClicked = false;
+
+            statsNode.innerHTML = '';
+
+            // The following will translate the mouse coordinates into a number
+            // ranging from -1 to 1, where
+            //      x == -1 && y == -1 means top-left, and
+            //      x ==  1 && y ==  1 means bottom right
+            var x = ( clickInfo.x / SCREEN_WIDTH ) * 2 - 1;
+            var y = -( clickInfo.y / SCREEN_HEIGHT ) * 2 + 1;
+
+            // Now we set our direction vector to those initial values
+            directionVector.set(x, y, 1);
+
+            // Unproject the vector
+            projector.unprojectVector(directionVector, camera);
+
+            // Substract the vector representing the camera position
+            directionVector.sub(camera.position);
+
+            // Normalize the vector, to avoid large numbers from the
+            // projection and substraction
+            directionVector.normalize();
+
+            // Now our direction vector holds the right numbers!
+            raycaster.set(camera.position, directionVector);
+
+            var intersects = raycaster.intersectObjects(scene.children, true);
+
+            if (intersects.length) {
+                // intersections are, by default, ordered by distance,
+                // so we only care for the first one. The intersection
+                // object holds the intersection point, the face that's
+                // been "hit" by the ray, and the object to which that
+                // face belongs. We only care for the object itself.
+                var target = intersects[0].object;
+                statsNode.innerHTML = 'Name: ' + target.name
+                        + '<br>'
+                        + 'ID: ' + target.id;
+
+                // let's move the marker to the hit point
+                marker.position.x = intersects[0].point.x;
+                marker.position.y = intersects[0].point.y;
+                marker.position.z = intersects[0].point.z;
+            }
+
+        }
+
+        controls.update(delta);
+        camera.position.y = 20;
+
+        renderer.render(scene, camera);
+    }
+
+
+</script>
+
+<script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-10931011-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+
+</script>
+
+</body>
+</html>
